@@ -20,7 +20,7 @@ plugins {
 }
 
 apply plugin: 'idea'
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'jacoco'
 apply plugin: 'maven'
 apply plugin: 'scala'
@@ -34,11 +34,11 @@ repositories {
     mavenCentral()
 }
 
-task generateSources() {
-    println "hello"
+task generateSources(type: JavaExec, dependsOn: classes) {
+    main = 'Generator'
+    classpath sourceSets.main.runtimeClasspath
+    classpath configurations.runtime
 }
-
-compileJava.dependsOn("generateSources")
 
 compileJava {
     sourceCompatibility = 8
@@ -48,6 +48,8 @@ compileJava {
 }
 
 dependencies {
+    implementation 'org.scala-lang:scala-library:2.11.12'
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     jmh "org.openjdk.jmh:jmh-core:$jmhVersion"
